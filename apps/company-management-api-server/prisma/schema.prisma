@@ -1,0 +1,40 @@
+datasource db {
+  provider = "sqlserver"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Employee {
+  createdAt            DateTime          @default(now())
+  email                String?
+  id                   String            @id @default(cuid())
+  name                 String?
+  position             String?
+  resolvedTicketsItems ResolvedTickets[]
+  team                 Team?             @relation(fields: [teamId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  teamId               String?
+  updatedAt            DateTime          @updatedAt
+}
+
+model ResolvedTickets {
+  createdAt   DateTime  @default(now())
+  employee    Employee? @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employeeId  String?
+  id          String    @id @default(cuid())
+  month       Int?
+  ticketCount Int?
+  updatedAt   DateTime  @updatedAt
+  year        Int?
+}
+
+model Team {
+  createdAt  DateTime   @default(now())
+  department String?
+  employees  Employee[]
+  id         String     @id @default(cuid())
+  name       String?
+  updatedAt  DateTime   @updatedAt
+}
